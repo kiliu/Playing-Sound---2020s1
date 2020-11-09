@@ -1198,7 +1198,7 @@ class Signal:
         wave = self.make_wave(duration, start=0, framerate=framerate)
         wave.plot()
     
-    def make_wave(self, duration=1, start=0, framerate=11025):
+    def make_wave(self, duration=1, start=0, framerate=44100):
         """Makes a Wave object.
 
         duration: float seconds
