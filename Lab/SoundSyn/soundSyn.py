@@ -22,6 +22,7 @@ class SoundSyn:
         self.bpm = 240
         self.cutpoint = [0.25, 0.35, 0.7]
         self.sustainLevel = 2/3
+        self.framerate = 44100
         
     def set_scale(self, scale):
         self.scale = scale
@@ -234,7 +235,7 @@ def genToneByFreq(rootFreq, dur, ss):
 #    sc = partialAmp        
     
     sin_sig = thinkdsp.SinSignal(freq=rootFreq, amp=ss.partialAmp[0], offset=0)
-    wave = sin_sig.make_wave(duration=dur, start=0, framerate=11025)
+    wave = sin_sig.make_wave(duration=dur, start=0, framerate=ss.framerate)
 
 #    window = makeWindow(len(wave.ys),100)
     window = makeWindow(len(wave.ys),ss.cutpoint,1,ss.sustainLevel)
@@ -245,7 +246,7 @@ def genToneByFreq(rootFreq, dur, ss):
     for i in range(1,l):
 #        sin_sig = thinkdsp.SinSignal(freq=rootFreq * ratioArtSpec(i+1), amp=sc[i], offset=0)
         sin_sig = thinkdsp.SinSignal(freq=rootFreq * ss.partialRatio[i], amp=ss.partialAmp[i], offset=0)
-        w = sin_sig.make_wave(duration=dur, start=0, framerate=11025)
+        w = sin_sig.make_wave(duration=dur, start=0, framerate=ss.framerate)
         
 #        window = makeWindow(len(wave.ys),100-i*10)
         r = 0.3*((l-i-1)/(l-1))/l+0.7
@@ -300,7 +301,7 @@ def genTrackByNoteList(noteList, timeList, ss):
     '''
     d = 60/ss.bpm
     l = len(noteList)
-    wave = thinkdsp.rest(0)        
+    wave = thinkdsp.rest(0)   
     for i in range(l):
         if len(noteList[i]) <= 3:
             wave = wave | genToneByNote(noteList[i], timeList[i]*d, ss)
